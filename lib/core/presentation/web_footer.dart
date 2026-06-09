@@ -27,18 +27,6 @@ class WebFooter extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          Wrap(
-            spacing: 24,
-            runSpacing: 8,
-            alignment: WrapAlignment.center,
-            children: [
-              TextButton(onPressed: () {}, child: const Text('About Us')),
-              TextButton(onPressed: () {}, child: const Text('Privacy Policy')),
-              TextButton(onPressed: () {}, child: const Text('Terms of Service')),
-              TextButton(onPressed: () {}, child: const Text('Contact')),
-            ],
-          ),
-          const SizedBox(height: 16),
           Text(
             '© ${DateTime.now().year} TaskPulse Inc. All rights reserved.',
             style: theme.textTheme.bodySmall?.copyWith(
