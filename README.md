@@ -2,6 +2,10 @@
 
 TaskPulse is a comprehensive task management application built with Flutter, designed to help individuals organize their daily tasks efficiently. It features a modern, responsive UI, task categorization, priority levels, and local data persistence. Made by Muhammad Mahad.
 
+---
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/fa86d31b-3265-4023-86be-b2e1f74b85d6/deploy-status)](https://app.netlify.com/projects/task-pulse-manager/deploys)
+
 ## Features
 
 - **Task Management**: Create, edit, delete, and mark tasks as complete.
