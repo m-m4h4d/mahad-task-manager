@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
 import 'core/utils/shared_prefs_service.dart';
+import 'core/presentation/web_footer.dart';
 import 'features/auth/presentation/auth_controller.dart';
 import 'features/auth/domain/auth_state.dart';
 import 'features/auth/presentation/login_screen.dart';
@@ -82,6 +84,19 @@ class TaskPulseApp extends ConsumerWidget {
       themeMode: themeMode,
       routerConfig: router,
       debugShowCheckedModeBanner: false,
+      builder: (context, child) {
+        if (kIsWeb) {
+          return Material(
+            child: Column(
+              children: [
+                Expanded(child: child!),
+                const WebFooter(),
+              ],
+            ),
+          );
+        }
+        return child!;
+      },
     );
   }
 }

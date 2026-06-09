@@ -71,7 +71,7 @@ class TaskListScreen extends ConsumerWidget {
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: ['All', 'Pending', 'In_progress', 'Completed'].map((
+                  children: ['All', 'In_progress', 'Completed'].map((
                     status,
                   ) {
                     final currentFilter = ref.watch(filterStatusProvider);
@@ -148,12 +148,25 @@ class TaskListScreen extends ConsumerWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        trailing: Chip(
-                          label: Text(
-                            task.status,
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                          padding: EdgeInsets.zero,
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Chip(
+                              label: Text(
+                                task.status,
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                              padding: EdgeInsets.zero,
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete_outline, color: Colors.red),
+                              onPressed: () {
+                                if (task.id != null) {
+                                  ref.read(taskControllerProvider.notifier).deleteTask(task.id!);
+                                }
+                              },
+                            ),
+                          ],
                         ),
                         onTap: () {
                           context.push('/add-task', extra: task);

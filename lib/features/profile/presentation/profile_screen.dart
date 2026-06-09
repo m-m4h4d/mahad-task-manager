@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import '../../auth/presentation/auth_controller.dart';
+import '../../auth/domain/auth_state.dart';
 import '../../../../core/utils/shared_prefs_service.dart';
 
 final quoteProvider = FutureProvider<String>((ref) async {
   try {
     final response = await http.get(
-      Uri.parse('https://zenquotes.io/api/random'),
+      Uri.parse('https://dummyjson.com/quotes/random'),
     );
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return "\${data[0]['q']} — \${data[0]['a']}";
+      return "${data['quote']} — ${data['author']}";
     }
   } catch (e) {
     // Fallback if API fails or network issue
@@ -28,9 +29,12 @@ class ProfileScreen extends ConsumerWidget {
     final quoteAsyncValue = ref.watch(quoteProvider);
     final prefs = ref.watch(sharedPreferencesProvider);
 
-    // We mock the current user's email based on session token prefix logic used in AuthController
-    // In a real app, you'd store the user ID/Email in the state
-    final name = prefs.getString('name_mock@user.com') ?? 'TaskPulse User';
+    final authState = ref.watch(authControllerProvider);
+    String email = 'mock@user.com';
+    if (authState is AuthAuthenticated) {
+      email = authState.sessionToken.replaceFirst('token_', '');
+    }
+    final name = prefs.getString('name_$email') ?? 'TaskPulse User';
 
     return SafeArea(
       child: Padding(

@@ -13,7 +13,7 @@ class SharedPrefsService {
   static const String _themeKey = 'app_theme_mode';
 
   // Theme
-  bool get isDarkMode => _prefs.getBool(_themeKey) ?? false;
+  bool get isDarkMode => _prefs.getBool(_themeKey) ?? true;
   Future<void> setDarkMode(bool isDark) async => await _prefs.setBool(_themeKey, isDark);
 
 }

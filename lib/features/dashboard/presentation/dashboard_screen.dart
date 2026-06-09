@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -35,10 +36,51 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             const Text('TaskPulse', style: TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
-        centerTitle: true,
+        centerTitle: !kIsWeb,
+        actions: kIsWeb
+            ? [
+                TextButton.icon(
+                  onPressed: () => setState(() => _currentIndex = 0),
+                  icon: Icon(
+                    _currentIndex == 0 ? Icons.task : Icons.task_outlined,
+                    color: _currentIndex == 0 ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface,
+                  ),
+                  label: Text(
+                    'Tasks',
+                    style: TextStyle(
+                      color: _currentIndex == 0 ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface,
+                      fontWeight: _currentIndex == 0 ? FontWeight.bold : null,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                TextButton.icon(
+                  onPressed: () => setState(() => _currentIndex = 1),
+                  icon: Icon(
+                    _currentIndex == 1 ? Icons.person : Icons.person_outline,
+                    color: _currentIndex == 1 ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface,
+                  ),
+                  label: Text(
+                    'Profile',
+                    style: TextStyle(
+                      color: _currentIndex == 1 ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface,
+                      fontWeight: _currentIndex == 1 ? FontWeight.bold : null,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                  onPressed: () => ref.read(themeControllerProvider.notifier).toggleTheme(),
+                  icon: Icon(themeMode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode),
+                ),
+                const SizedBox(width: 16),
+              ]
+            : null,
       ),
       body: _screens[_currentIndex],
-      bottomNavigationBar: NavigationBar(
+      bottomNavigationBar: kIsWeb
+          ? null
+          : NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) {
           if (index == 2) {
