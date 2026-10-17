@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import '../../auth/presentation/auth_controller.dart';
 import '../../auth/domain/auth_state.dart';
-import '../../../../core/utils/shared_prefs_service.dart';
 
 final quoteProvider = FutureProvider<String>((ref) async {
   try {
@@ -27,14 +26,11 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final quoteAsyncValue = ref.watch(quoteProvider);
-    final prefs = ref.watch(sharedPreferencesProvider);
-
     final authState = ref.watch(authControllerProvider);
-    String email = 'mock@user.com';
-    if (authState is AuthAuthenticated) {
-      email = authState.sessionToken.replaceFirst('token_', '');
-    }
-    final name = prefs.getString('name_$email') ?? 'TaskPulse User';
+    final email = authState is AuthAuthenticated ? authState.email : '';
+    final name = authState is AuthAuthenticated && authState.name.isNotEmpty
+        ? authState.name
+        : 'TaskPulse User';
 
     return SafeArea(
       child: Padding(
