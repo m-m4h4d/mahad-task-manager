@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/task_model.dart';
 import '../data/task_repository.dart';
+import '../../auth/presentation/auth_controller.dart';
 import 'task_list_screen.dart'; // To invalidate the list provider
 
 class TaskController extends Notifier<AsyncValue<void>> {
@@ -9,11 +10,17 @@ class TaskController extends Notifier<AsyncValue<void>> {
     return const AsyncData(null);
   }
 
+  String _requireUserId() {
+    final userId = ref.read(currentUserIdProvider);
+    if (userId == null) throw StateError('No user is signed in');
+    return userId;
+  }
+
   Future<void> addTask(TaskModel task) async {
     state = const AsyncLoading();
     try {
       final repository = ref.read(taskRepositoryProvider);
-      await repository.insert(task);
+      await repository.insert(task, _requireUserId());
       ref.invalidate(taskListProvider);
       state = const AsyncData(null);
     } catch (e, stack) {
@@ -25,7 +32,7 @@ class TaskController extends Notifier<AsyncValue<void>> {
     state = const AsyncLoading();
     try {
       final repository = ref.read(taskRepositoryProvider);
-      await repository.update(task);
+      await repository.update(task, _requireUserId());
       ref.invalidate(taskListProvider);
       state = const AsyncData(null);
     } catch (e, stack) {
@@ -37,7 +44,7 @@ class TaskController extends Notifier<AsyncValue<void>> {
     state = const AsyncLoading();
     try {
       final repository = ref.read(taskRepositoryProvider);
-      await repository.delete(id);
+      await repository.delete(id, _requireUserId());
       ref.invalidate(taskListProvider);
       state = const AsyncData(null);
     } catch (e, stack) {

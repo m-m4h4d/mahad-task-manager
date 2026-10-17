@@ -44,31 +44,43 @@ class TaskRepository {
         (maxId, t) => (t.id ?? 0) > maxId ? t.id! : maxId,
       ) + 1;
 
-  Future<int> insert(TaskModel task) async {
+  // Every operation is scoped to [userId]: inserts are stamped with it, and
+  // reads, updates and deletes only see that user's tasks.
+  static const String _ownedBy = '${DatabaseHelper.columnId} = ? AND ${DatabaseHelper.columnUserId} = ?';
+
+  Future<int> insert(TaskModel task, String userId) async {
+    final owned = task.copyWith(userId: userId);
     if (kIsWeb) {
-      final newTask = task.copyWith(id: _nextWebId);
+      final newTask = owned.copyWith(id: _nextWebId);
       _webTasks.insert(0, newTask);
       await _saveWebTasks();
       return newTask.id!;
     }
     final db = await dbHelper.database;
-    return await db.insert(DatabaseHelper.tableTasks, task.toMap());
+    return await db.insert(DatabaseHelper.tableTasks, owned.toMap());
   }
 
-  Future<List<TaskModel>> getAllTasks() async {
+  Future<List<TaskModel>> getAllTasks(String userId) async {
+    await _claimUnownedTasks(userId);
     if (kIsWeb) {
-      return List.from(_webTasks);
+      return _webTasks.where((t) => t.userId == userId).toList();
     }
     final db = await dbHelper.database;
-    final maps = await db.query(DatabaseHelper.tableTasks, orderBy: '${DatabaseHelper.columnCreatedAt} DESC');
+    final maps = await db.query(
+      DatabaseHelper.tableTasks,
+      where: '${DatabaseHelper.columnUserId} = ?',
+      whereArgs: [userId],
+      orderBy: '${DatabaseHelper.columnCreatedAt} DESC',
+    );
     return maps.map((map) => TaskModel.fromMap(map)).toList();
   }
 
-  Future<int> update(TaskModel task) async {
+  Future<int> update(TaskModel task, String userId) async {
+    final owned = task.copyWith(userId: userId);
     if (kIsWeb) {
-      final index = _webTasks.indexWhere((t) => t.id == task.id);
+      final index = _webTasks.indexWhere((t) => t.id == task.id && t.userId == userId);
       if (index != -1) {
-        _webTasks[index] = task;
+        _webTasks[index] = owned;
         await _saveWebTasks();
         return 1;
       }
@@ -77,16 +89,16 @@ class TaskRepository {
     final db = await dbHelper.database;
     return await db.update(
       DatabaseHelper.tableTasks,
-      task.toMap(),
-      where: '${DatabaseHelper.columnId} = ?',
-      whereArgs: [task.id],
+      owned.toMap(),
+      where: _ownedBy,
+      whereArgs: [task.id, userId],
     );
   }
 
-  Future<int> delete(int id) async {
+  Future<int> delete(int id, String userId) async {
     if (kIsWeb) {
       final initialLength = _webTasks.length;
-      _webTasks.removeWhere((t) => t.id == id);
+      _webTasks.removeWhere((t) => t.id == id && t.userId == userId);
       final removed = initialLength - _webTasks.length;
       if (removed > 0) await _saveWebTasks();
       return removed;
@@ -94,8 +106,30 @@ class TaskRepository {
     final db = await dbHelper.database;
     return await db.delete(
       DatabaseHelper.tableTasks,
-      where: '${DatabaseHelper.columnId} = ?',
-      whereArgs: [id],
+      where: _ownedBy,
+      whereArgs: [id, userId],
+    );
+  }
+
+  /// Tasks saved before tasks were scoped to users have no owner. Hand them
+  /// to the first user who loads their tasks so they aren't lost.
+  Future<void> _claimUnownedTasks(String userId) async {
+    if (kIsWeb) {
+      var claimed = false;
+      for (var i = 0; i < _webTasks.length; i++) {
+        if (_webTasks[i].userId == null) {
+          _webTasks[i] = _webTasks[i].copyWith(userId: userId);
+          claimed = true;
+        }
+      }
+      if (claimed) await _saveWebTasks();
+      return;
+    }
+    final db = await dbHelper.database;
+    await db.update(
+      DatabaseHelper.tableTasks,
+      {DatabaseHelper.columnUserId: userId},
+      where: '${DatabaseHelper.columnUserId} IS NULL',
     );
   }
 }

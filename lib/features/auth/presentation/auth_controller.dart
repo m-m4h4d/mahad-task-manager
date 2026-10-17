@@ -88,3 +88,9 @@ class AuthController extends Notifier<AuthState> {
 }
 
 final authControllerProvider = NotifierProvider<AuthController, AuthState>(AuthController.new);
+
+/// The signed-in user's id, or null when nobody is signed in.
+final currentUserIdProvider = Provider<String?>((ref) {
+  final authState = ref.watch(authControllerProvider);
+  return authState is AuthAuthenticated ? authState.userId : null;
+});

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../auth/presentation/auth_controller.dart';
 import '../domain/task_model.dart';
 import '../data/task_repository.dart';
 import 'task_controller.dart';
 
 final taskListProvider = FutureProvider<List<TaskModel>>((ref) async {
   final repository = ref.watch(taskRepositoryProvider);
-  return repository.getAllTasks();
+  final userId = ref.watch(currentUserIdProvider);
+  if (userId == null) return [];
+  return repository.getAllTasks(userId);
 });
 
 class SearchQueryNotifier extends Notifier<String> {

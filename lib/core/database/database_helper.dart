@@ -5,11 +5,12 @@ import 'package:path_provider/path_provider.dart';
 
 class DatabaseHelper {
   static const _databaseName = "TaskPulse.db";
-  static const _databaseVersion = 1;
+  static const _databaseVersion = 2;
 
   static const tableTasks = 'tasks';
 
   static const columnId = 'id';
+  static const columnUserId = 'userId';
   static const columnTitle = 'title';
   static const columnDescription = 'description';
   static const columnCategory = 'category';
@@ -41,6 +42,7 @@ class DatabaseHelper {
       path,
       version: _databaseVersion,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -48,6 +50,7 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE $tableTasks (
         $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
+        $columnUserId TEXT,
         $columnTitle TEXT NOT NULL,
         $columnDescription TEXT,
         $columnCategory TEXT,
@@ -59,5 +62,13 @@ class DatabaseHelper {
         $columnUpdatedAt TEXT NOT NULL
       )
     ''');
+  }
+
+  Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      // Tasks created before this column existed have no owner; the
+      // repository assigns them to the first user who loads their tasks.
+      await db.execute('ALTER TABLE $tableTasks ADD COLUMN $columnUserId TEXT');
+    }
   }
 }
