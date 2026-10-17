@@ -2,6 +2,7 @@
 
 TaskPulse is a personal task manager built with Flutter. It runs on Android, the web and desktop, and keeps everything on the device: there is no server or account to set up. Made by Muhammad Mahad.
 
+[![CI](https://github.com/m-m4h4d/mahad-task-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/m-m4h4d/mahad-task-manager/actions/workflows/ci.yml)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/fa86d31b-3265-4023-86be-b2e1f74b85d6/deploy-status)](https://app.netlify.com/projects/task-pulse-manager/deploys)
 
 ## Download
