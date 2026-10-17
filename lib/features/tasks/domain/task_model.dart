@@ -1,5 +1,6 @@
 class TaskModel {
   final int? id;
+  final String? userId;
   final String title;
   final String? description;
   final String? category;
@@ -12,6 +13,7 @@ class TaskModel {
 
   TaskModel({
     this.id,
+    this.userId,
     required this.title,
     this.description,
     this.category,
@@ -26,6 +28,7 @@ class TaskModel {
   Map<String, dynamic> toMap() {
     return {
       if (id != null) 'id': id,
+      'userId': userId,
       'title': title,
       'description': description,
       'category': category,
@@ -41,6 +44,7 @@ class TaskModel {
   factory TaskModel.fromMap(Map<String, dynamic> map) {
     return TaskModel(
       id: map['id']?.toInt(),
+      userId: map['userId'],
       title: map['title'] ?? '',
       description: map['description'],
       category: map['category'],
@@ -55,6 +59,7 @@ class TaskModel {
 
   TaskModel copyWith({
     int? id,
+    String? userId,
     String? title,
     String? description,
     String? category,
@@ -67,6 +72,7 @@ class TaskModel {
   }) {
     return TaskModel(
       id: id ?? this.id,
+      userId: userId ?? this.userId,
       title: title ?? this.title,
       description: description ?? this.description,
       category: category ?? this.category,

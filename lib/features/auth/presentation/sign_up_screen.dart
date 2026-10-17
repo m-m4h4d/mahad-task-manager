@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../domain/auth_state.dart';
+import '../data/auth_repository.dart';
 import 'auth_controller.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
@@ -95,7 +96,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
-                      if (value == null || value.isEmpty || !value.contains('@')) {
+                      if (value == null || !AuthRepository.isValidEmail(value)) {
                         return 'Please enter a valid email';
                       }
                       return null;
