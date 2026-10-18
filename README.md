@@ -1,18 +1,18 @@
 # TaskPulse
 
-TaskPulse is a personal task manager built with Flutter. It runs on Android, the web and desktop, and keeps everything on the device: there is no server or account to set up. Made by Muhammad Mahad.
+TaskPulse is a personal task manager built with Flutter. It runs on Android, the web, and desktop, and keeps everything on the device: there is no server or account to set up. Made by Muhammad Mahad.
 
 [![CI](https://github.com/m-m4h4d/mahad-task-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/m-m4h4d/mahad-task-manager/actions/workflows/ci.yml)
 
 ## Download
 
-- **Android:** download `TaskPulse.apk` from the [latest release](https://github.com/m-m4h4d/mahad-task-manager/releases/latest) and install it (you may need to allow installs from unknown sources).
-- **Web:** open [task-pulse.vercel.app](https://task-pulse.vercel.app/) in your browser.
+- **Android:** Download `TaskPulse.apk` from the [latest release](https://github.com/m-m4h4d/mahad-task-manager/releases/latest) and install it (you may need to allow installs from unknown sources).
+- **Web:** Open [task-pulse-gray.vercel.app](https://task-pulse-gray.vercel.app/) in your browser.
 
 ## Features
 
-- **Tasks:** create, edit, delete and complete tasks. Each task has a title, description, category, priority (low, medium or high) and comma-separated tags.
-- **Search and filter:** search tasks by title and filter by status (all, in progress or completed).
+- **Tasks:** create, edit, delete, and complete tasks. Each task has a title, description, category, priority (low, medium, or high), and comma-separated tags.
+- **Search and filter:** search tasks by title and filter by status (all, in progress, or completed).
 - **Swipe to delete:** swipe a task away, or use its delete button.
 - **Accounts:** sign up and log in with an email and password. Each account sees only its own tasks.
 - **Dark mode:** switch between light and dark themes; the choice is remembered.
