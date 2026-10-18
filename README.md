@@ -3,12 +3,11 @@
 TaskPulse is a personal task manager built with Flutter. It runs on Android, the web and desktop, and keeps everything on the device: there is no server or account to set up. Made by Muhammad Mahad.
 
 [![CI](https://github.com/m-m4h4d/mahad-task-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/m-m4h4d/mahad-task-manager/actions/workflows/ci.yml)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/fa86d31b-3265-4023-86be-b2e1f74b85d6/deploy-status)](https://app.netlify.com/projects/task-pulse-manager/deploys)
 
 ## Download
 
 - **Android:** download `TaskPulse.apk` from the [latest release](https://github.com/m-m4h4d/mahad-task-manager/releases/latest) and install it (you may need to allow installs from unknown sources).
-- **Web:** the web build is deployed to Netlify (see the badge above).
+- **Web:** open [task-pulse.vercel.app](https://task-pulse.vercel.app/) in your browser.
 
 ## Features
 
@@ -55,6 +54,10 @@ flutter test                # tests
 flutter build apk --release # Android APK, written to build/app/outputs/flutter-apk/
 flutter build web           # web build, written to build/web/
 ```
+
+### Deploying the web app
+
+The web app is hosted on [Vercel](https://vercel.com/). Vercel's build machines don't include Flutter, so [`vercel.json`](vercel.json) downloads the stable Flutter SDK, runs `flutter build web --release` and serves `build/web`. To set up a new deployment, import the repository into Vercel with the repository root as the project's root directory; the build settings come from `vercel.json`. The landing page in `landing/` is a separate Vercel project whose root directory is `landing`.
 
 ### Publishing a release
 
